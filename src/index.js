@@ -50,17 +50,30 @@ function dogCardMaker({ imageURL, breed }) {
 //    * ON SUCCESS: use the data to create dogCards and append them to the entry point
 //    * ON FAILURE: log the error to the console
 //    * IN ANY CASE: log "done" to the console
-axios.get("https://dog.ceo/api/breeds/image/random")
-  .then((res) => {
-    const dogCard = dogCardMaker({imageURL: res.data.message, breed: "Random"});
-    entryPoint.appendChild(dogCard);
-  })
-  .catch((err) => {
-    console.error(err);
-  })
-  .finally(() => {
-    console.log("done with tacos");
-  });
+
+function getDogs(breed, count) {
+  axios.get(`https://dog.ceo/api/breed/${breed}/images/random/${count}`)
+    .then((res) => {
+      res.data.message.forEach((imageURL) => {
+        const dogCard = dogCardMaker({ imageURL: imageURL, breed: breed });
+        entryPoint.appendChild(dogCard);
+        //const dogCard = dogCardMaker({imageURL: res.data.message, breed: "Random"});
+        //entryPoint.appendChild(dogCard);
+      });
+    })
+    .catch((err) => {
+      console.log("Something went wrong", err);
+    })
+    .finally(() => {
+      console.log("done with tacos");
+    });
+}
+
+document.querySelector('button').addEventListener('click', evt => {
+  getDogs('mastiff', 3)
+  getDogs('appenzeller', 3)
+})
+
 // 👉 (OPTIONAL) TASK 6- Wrap the fetching operation inside a function `getDogs`
 // that takes a breed and a count (of dogs)
 
